@@ -9,6 +9,8 @@ protocol MainViewable: AnyObject {
     
     func updateAverageSpeed(_ value: Double)
     
+    func updateUnits(_ value: String)
+    
     func enableHUD(_ shouldEnable: Bool)
 }
 
@@ -28,6 +30,13 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
     
     var timer: Timer? = nil
     
+    var units: SpeedometerUnitsProtocol = Km() {
+        didSet {
+            self.speedometerView.units = units
+            self.digitalSpeedometerView.units = units
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,13 +46,14 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         
         presenter = MainPresenter(view: self)
         
-        self.presenter.readAndSetDataFromDB()
+        NotificationCenter.default.addObserver(self, selector: #selector(onResignActiveNotification), name:  UIApplication.willResignActiveNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(saveUserDataBeforeExit), name:  UIApplication.willTerminateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onDidBecomeActiveNotification), name:  UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     
     @IBAction func didTouchedHUDButton(_ sender: Any) {
+        self.presenter.saveUserData(self.isHUDEnabled)
         changeHUDStatus(isHUDEnabled)
     }
     
@@ -51,14 +61,18 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         self.presenter.resetData()
     }
     
-    @objc
-    private func saveUserDataBeforeExit() {
+    @objc private func onResignActiveNotification() {
         UIScreen.main.brightness = CGFloat(self.getCurrentBrightness())
-        self.presenter.saveUserDataBeforeExit(isHUDEnabled)
+        self.presenter.disableTimers()
+        manager.stopUpdatingLocation()
+    }
+    
+    @objc private func onDidBecomeActiveNotification() {
+        self.presenter.readAndSetDataFromDB()
+        manager.startUpdatingLocation()
     }
     
     func enableHUD(_ shouldEnable: Bool) {
-        print(shouldEnable)
         changeHUDStatus(shouldEnable)
     }
     
@@ -68,8 +82,20 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         }
     }
     
+    func updateUnits(_ value: String) {
+        switch value {
+        case Km().text:
+            self.units = Km()
+        case Mi().text:
+            self.units = Mi()
+        default:
+            self.units = Km()
+        }
+    }
+    
     func updateDistance(_ value: Double) {
         let distanceInCurrentUnits = value * (speedometerView.units?.factorToGetFromMeters ?? Km().factorToGetFromMeters)
+
         DispatchQueue.main.async {
             self.distanceCoveredLabel.text = String(format: "%.2f" , distanceInCurrentUnits) + self.speedometerView.units!.text
         }
@@ -78,22 +104,24 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
     func updateAverageSpeed(_ value: Double) {
         let speedInCurrentUnits = value * (speedometerView.units?.factorToGetFromMetersPerSecond ?? Km().factorToGetFromMeters)
         DispatchQueue.main.async {
-            self.averageSpeedLabel.text = String(format: "%.2f", max(0, speedInCurrentUnits)) + self.speedometerView.units!.text + "/h"
+            self.averageSpeedLabel.text = String(format: "%.2f", max(0, speedInCurrentUnits)) + self.speedometerView.units!.textPerHour
         }
     }
     
     private func changeHUDStatus(_ isHUDEnabled: Bool) {
         self.isHUDEnabled = !isHUDEnabled
-        let shouldRotateScale: CGFloat = isHUDEnabled ? -1 : 1
-        
+        let shouldRotateScale: CGFloat = isHUDEnabled ? 1 : -1
+
         if Int(shouldRotateScale) == -1 {
             self.saveCurrentBrightness()
             DispatchQueue.main.async {
                 UIScreen.main.brightness = CGFloat(1.0)
+                UIApplication.shared.isIdleTimerDisabled = true
             }
         } else {
             DispatchQueue.main.async {
                 UIScreen.main.brightness = CGFloat(self.getCurrentBrightness())
+                UIApplication.shared.isIdleTimerDisabled = false
             }
         }
         
@@ -147,12 +175,12 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
     }
     
     private func setupSpeedometer() {
-        self.speedometerView.units = Km()
+        self.speedometerView.units = units
         speedometerView.value = 0
     }
     
     private func setupDigitalSpeedometer() {
-        self.digitalSpeedometerView.units = Km()
+        self.digitalSpeedometerView.units = units
         digitalSpeedometerView.value = 0
     }
     
@@ -160,6 +188,5 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
     }
 }

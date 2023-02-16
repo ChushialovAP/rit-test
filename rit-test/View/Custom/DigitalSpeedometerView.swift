@@ -24,7 +24,7 @@ public class DigitalSpeedometerView: UIView {
     
     public var units: SpeedometerUnitsProtocol? {
         didSet {
-            unitOfMeasurementLabel.text = units!.text + "/h"
+            unitOfMeasurementLabel.text = units!.textPerHour
         }
     }
     

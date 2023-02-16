@@ -12,8 +12,7 @@ class MainTabBarController: UITabBarController, SettingsDelegate {
 
     func didChangeUnits(to units: SpeedometerUnitsProtocol) {
         if let mainVC = viewControllers?.first as? MainViewController {
-            mainVC.speedometerView.units = units
-            mainVC.digitalSpeedometerView.units = units
+            mainVC.units = units
         }
     }
     

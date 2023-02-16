@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19CBA1A2299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19CBA1A0299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf */; };
+		19CBA1A3299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19CBA1A1299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf */; };
+		19CBA1A8299E3D3100DC36FC /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19CBA1A7299E3D3100DC36FC /* UserDefaultsService.swift */; };
 		19D1447029950EEA00E45916 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D1446F29950EEA00E45916 /* AppDelegate.swift */; };
 		19D1447229950EEA00E45916 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D1447129950EEA00E45916 /* SceneDelegate.swift */; };
 		19D1447929950EEB00E45916 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19D1447829950EEB00E45916 /* Assets.xcassets */; };
@@ -20,8 +23,6 @@
 		19D1449E299A413700E45916 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D1449D299A413700E45916 /* SettingsViewController.swift */; };
 		19D144A0299A468600E45916 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D1449F299A468600E45916 /* MainTabBarController.swift */; };
 		19D144A2299A50EF00E45916 /* DigitalSpeedometerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D144A1299A50EF00E45916 /* DigitalSpeedometerView.swift */; };
-		19D144A5299A529800E45916 /* HelveticaNeueCyr-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19D144A4299A529800E45916 /* HelveticaNeueCyr-Medium.ttf */; };
-		19D144A7299A529D00E45916 /* Helvetica Neue Condensed Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19D144A6299A529C00E45916 /* Helvetica Neue Condensed Bold.ttf */; };
 		19D144AF299A738800E45916 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D144AE299A738800E45916 /* NetworkService.swift */; };
 		19D144B2299A740900E45916 /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D144B1299A740900E45916 /* WeatherModel.swift */; };
 		19D144B5299A80E700E45916 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D144B4299A80E700E45916 /* MainPresenter.swift */; };
@@ -31,6 +32,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19CBA1A0299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeueCyr-Medium.ttf"; sourceTree = "<group>"; };
+		19CBA1A1299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Helvetica Neue Condensed Bold.ttf"; sourceTree = "<group>"; };
+		19CBA1A7299E3D3100DC36FC /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		19D1446C29950EEA00E45916 /* rit-test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rit-test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D1446F29950EEA00E45916 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		19D1447129950EEA00E45916 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -46,8 +50,6 @@
 		19D1449D299A413700E45916 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		19D1449F299A468600E45916 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		19D144A1299A50EF00E45916 /* DigitalSpeedometerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalSpeedometerView.swift; sourceTree = "<group>"; };
-		19D144A4299A529800E45916 /* HelveticaNeueCyr-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "HelveticaNeueCyr-Medium.ttf"; path = "../../../HelveticaNeueCyr-Medium.ttf"; sourceTree = "<group>"; };
-		19D144A6299A529C00E45916 /* Helvetica Neue Condensed Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Helvetica Neue Condensed Bold.ttf"; path = "../../../Helvetica Neue Condensed Bold.ttf"; sourceTree = "<group>"; };
 		19D144AE299A738800E45916 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		19D144B1299A740900E45916 /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		19D144B4299A80E700E45916 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
@@ -155,8 +157,8 @@
 		19D144A3299A524A00E45916 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				19D144A6299A529C00E45916 /* Helvetica Neue Condensed Bold.ttf */,
-				19D144A4299A529800E45916 /* HelveticaNeueCyr-Medium.ttf */,
+				19CBA1A1299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf */,
+				19CBA1A0299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -183,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				19D144B8299B953C00E45916 /* SQLiteDatabaseService.swift */,
+				19CBA1A7299E3D3100DC36FC /* UserDefaultsService.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -290,10 +293,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				19D1448529951AAF00E45916 /* Main.storyboard in Resources */,
-				19D144A5299A529800E45916 /* HelveticaNeueCyr-Medium.ttf in Resources */,
+				19CBA1A2299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf in Resources */,
 				19D1447C29950EEB00E45916 /* LaunchScreen.storyboard in Resources */,
 				19D1447929950EEB00E45916 /* Assets.xcassets in Resources */,
-				19D144A7299A529D00E45916 /* Helvetica Neue Condensed Bold.ttf in Resources */,
+				19CBA1A3299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +358,7 @@
 				19D1447229950EEA00E45916 /* SceneDelegate.swift in Sources */,
 				19D144B5299A80E700E45916 /* MainPresenter.swift in Sources */,
 				19D144A2299A50EF00E45916 /* DigitalSpeedometerView.swift in Sources */,
+				19CBA1A8299E3D3100DC36FC /* UserDefaultsService.swift in Sources */,
 				19D14495299A0FAB00E45916 /* Units.swift in Sources */,
 				19D14490299A0D2E00E45916 /* Constants.swift in Sources */,
 				19D144B9299B953C00E45916 /* SQLiteDatabaseService.swift in Sources */,

@@ -15,9 +15,11 @@ protocol MainPresenterProtocol: AnyObject {
     
     func resetData()
     
-    func saveUserDataBeforeExit(_ isHUDEnabled: Bool)
+    func saveUserData(_ isHUDEnabled: Bool)
     
     func readAndSetDataFromDB()
+    
+    func disableTimers()
 }
 
 final class MainPresenter: MainPresenterProtocol {
@@ -26,9 +28,18 @@ final class MainPresenter: MainPresenterProtocol {
     
     private var db = SqliteDatabaseService()
     
+    private var saveDestinationEveryDistanceInMeters: Double = 100
+    
     var locations = [CLLocation]()
+    
+    private var updateEveryAskedDistance: Double = 0
     var currentDistanceCovered: Double = 0 {
         didSet {
+            updateEveryAskedDistance = updateEveryAskedDistance + currentDistanceCovered
+            if (updateEveryAskedDistance > saveDestinationEveryDistanceInMeters) {
+                updateEveryAskedDistance = 0
+                self.saveUserDistanceCovered()
+            }
             self.view?.updateDistance(currentDistanceCovered)
         }
     }
@@ -42,17 +53,28 @@ final class MainPresenter: MainPresenterProtocol {
     private var locationsShouldBeRemovedWhenAppend = false
     private var timer: Timer? = nil
     
-    let defaults = UserDefaults.standard
+    let UDService = UserDefaultsService()
     
-    init (view: MainViewable) {
+    init (view: MainViewable, saveDestinationEveryDistanceInMeters: Double? = nil) {
         self.view = view
         
         timer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(delayLocationsRemoval), userInfo: nil, repeats: false)
+        
+        if let saveDestinationEveryDistanceInMeters = saveDestinationEveryDistanceInMeters {
+            self.saveDestinationEveryDistanceInMeters = saveDestinationEveryDistanceInMeters
+        }
+        
     }
     
     @objc
     private func delayLocationsRemoval() {
         locationsShouldBeRemovedWhenAppend = true
+    }
+    
+    func disableTimers() {
+        if let timer = timer {
+            timer.invalidate()
+        }
     }
     
     func loadData(currentLocation location: CLLocationCoordinate2D?) -> Bool {
@@ -76,7 +98,6 @@ final class MainPresenter: MainPresenterProtocol {
                     return
                 }
                 
-                print(result)
                 self.view?.updateWeather(result.current.temp_c)
             case .failure(let error):
                 print(error)
@@ -91,17 +112,16 @@ final class MainPresenter: MainPresenterProtocol {
         } catch {
             print("error while creating connection with database")
         }
-
+        
         if let entity = db.read() {
-            print(entity)
-            self.view?.updateDistance(entity.distanceCovered)
+            self.currentDistanceCovered = entity.distanceCovered
             self.view?.enableHUD(entity.isHUDEnabled != 0)
         }
         
         db.closeDB()
     }
     
-    func saveUserDataBeforeExit(_ isHUDEnabled: Bool) {
+    func saveUserData(_ isHUDEnabled: Bool) {
         do {
             try db.openDB()
         } catch {
@@ -110,7 +130,19 @@ final class MainPresenter: MainPresenterProtocol {
         
         let entryToSave = DBRecord(isHUDEnabled: isHUDEnabled,
                                    distanceCovered: self.currentDistanceCovered)
-        db.insert(entryToSave)
+        db.insertFullRecord(entryToSave)
+        
+        db.closeDB()
+    }
+    
+    func saveUserDistanceCovered() {
+        do {
+            try db.openDB()
+        } catch {
+            print("error while creating connection with database")
+        }
+        
+        db.insertDistanceCovered(self.currentDistanceCovered)
         
         db.closeDB()
     }
@@ -151,9 +183,9 @@ final class MainPresenter: MainPresenterProtocol {
         }
     }
     
-    func saveUserDefaultBrightness(_ value: Double) { defaults.set(value, forKey: "currentBrightness") }
+    func saveUserDefaultBrightness(_ value: Double) { UDService.saveUserDefaultBrightness(value) }
     
-    func getUserDefaultBrightness() -> Double { defaults.double(forKey: "currentBrightness") }
+    func getUserDefaultBrightness() -> Double { UDService.getUserDefaultBrightness() }
     
     private func computeDistance(from points: [CLLocationCoordinate2D]) -> Double {
         guard let first = points.first else { return 0.0 }
