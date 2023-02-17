@@ -7,5 +7,5 @@ target 'rit-test' do
 
   # Pods for rit-test
   pod 'SQLite.swift', '~> 0.14.0'
-
+  pod 'ColorCompatibility'
 end

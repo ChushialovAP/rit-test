@@ -4,6 +4,7 @@ public protocol SpeedometerUnitsProtocol {
     var factorToGetFromMetersPerSecond: Double {get set}
     var factorToGetFromMeters: Double {get set}
     var maxValue: Double {get set}
+    var enumCase: UnitsEnum {get set}
 }
 
 struct Km: SpeedometerUnitsProtocol {
@@ -12,6 +13,7 @@ struct Km: SpeedometerUnitsProtocol {
     var factorToGetFromMetersPerSecond: Double = 3.6
     var factorToGetFromMeters: Double = 0.001
     var maxValue: Double = 240
+    var enumCase: UnitsEnum = .Km
 }
 
 struct Mi: SpeedometerUnitsProtocol {
@@ -20,4 +22,5 @@ struct Mi: SpeedometerUnitsProtocol {
     var factorToGetFromMetersPerSecond: Double = 2.23694
     var factorToGetFromMeters: Double = 0.000621371
     var maxValue: Double = 160
+    var enumCase: UnitsEnum = .Mi
 }

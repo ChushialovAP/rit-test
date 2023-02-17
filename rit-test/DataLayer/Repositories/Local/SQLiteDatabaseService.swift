@@ -45,6 +45,7 @@ public final class SqliteDatabaseService {
             //            deleteDB(dbURL: dbURL)
             throw SqliteError(message: "error opening database \(dbURL.absoluteString)")
         }
+        print("connection established")
     }
     
     func closeDB() {
@@ -66,7 +67,8 @@ public final class SqliteDatabaseService {
         let createTableString = """
                                 CREATE TABLE IF NOT EXISTS Record
                                 (id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
-                                isHUDEnabled BOOLEAN,
+                                isHUDEnabled INTEGER,
+                                unitsChosen INTEGER,
                                 distanceCovered REAL)
                                 """
         // ID | isHUDEnabled | distanceCovered
@@ -83,49 +85,47 @@ public final class SqliteDatabaseService {
         sqlite3_finalize(createTableStmt)
     }
     
-    func insertFullRecord(_ entry: DBRecord) {
-        let insertStmtString = """
-                                INSERT OR REPLACE INTO Record (id, isHUDEnabled, distanceCovered) VALUES (?, ?, ?);
-                                """
-        
-        if sqlite3_prepare_v2(db, insertStmtString, -1, &insertEntryStmt, nil) ==
-            SQLITE_OK {
-            let id: Int32 = 1
+    func insertRecord(_ entry: DBRecord) {
+        if entry.isHUDEnabled != nil && entry.unitsChosen != nil {
+            let insertStmtString = """
+                                    INSERT OR REPLACE INTO Record (id, isHUDEnabled, unitsChosen, distanceCovered) VALUES (?, ?, ?, ?);
+                                    """
             
-            sqlite3_bind_int(insertEntryStmt, 1, id)
-            sqlite3_bind_int(insertEntryStmt, 2, Int32(entry.isHUDEnabled))
-            sqlite3_bind_double(insertEntryStmt, 3, entry.distanceCovered)
-            if sqlite3_step(insertEntryStmt) == SQLITE_DONE {
-                print("\nSuccessfully inserted row.")
+            if sqlite3_prepare_v2(db, insertStmtString, -1, &insertEntryStmt, nil) ==
+                SQLITE_OK {
+                let id: Int32 = 1
+                
+                sqlite3_bind_int(insertEntryStmt, 1, id)
+                sqlite3_bind_int(insertEntryStmt, 2, Int32(entry.isHUDEnabled!))
+                sqlite3_bind_int(insertEntryStmt, 3, Int32(entry.unitsChosen!))
+                sqlite3_bind_double(insertEntryStmt, 4, entry.distanceCovered)
+                if sqlite3_step(insertEntryStmt) == SQLITE_DONE {
+                    print("\nSuccessfully inserted row.")
+                } else {
+                    print("\nCould not insert row.")
+                }
             } else {
-                print("\nCould not insert row.")
+                print("\nINSERT statement is not prepared.")
             }
+            sqlite3_finalize(insertEntryStmt)
         } else {
-            print("\nINSERT statement is not prepared.")
-        }
-        sqlite3_finalize(insertEntryStmt)
-    }
+            let updateStmtString = """
+                                    UPDATE Record SET distanceCovered = \(entry.distanceCovered) WHERE id = 1;
+                                    """
+            
+            if sqlite3_prepare_v2(db, updateStmtString, -1, &updateEntryStmt, nil) ==
+                SQLITE_OK {
     
-    func insertDistanceCovered(_ value: Double) {
-        let insertStmtString = """
-                                INSERT OR REPLACE INTO Record (id, distanceCovered) VALUES (?, ?);
-                                """
-        
-        if sqlite3_prepare_v2(db, insertStmtString, -1, &insertEntryStmt, nil) ==
-            SQLITE_OK {
-            let id: Int32 = 1
-            
-            sqlite3_bind_int(insertEntryStmt, 1, id)
-            sqlite3_bind_double(insertEntryStmt, 2, value)
-            if sqlite3_step(insertEntryStmt) == SQLITE_DONE {
-                print("\nSuccessfully inserted row.")
+                if sqlite3_step(updateEntryStmt) == SQLITE_DONE {
+                    print("\nSuccessfully updated row.")
+                } else {
+                    print("\nCould not update row.")
+                }
             } else {
-                print("\nCould not insert row.")
+                print("\nUPDATE statement is not prepared.")
             }
-        } else {
-            print("\nINSERT statement is not prepared.")
+            sqlite3_finalize(updateEntryStmt)
         }
-        sqlite3_finalize(insertEntryStmt)
     }
     
     func read() -> DBRecord? {
@@ -134,13 +134,15 @@ public final class SqliteDatabaseService {
                             """
         
         var isHUDEnabled: Int32
+        var unitsChosen: Int32
         var distanceCovered: Double
         
         if sqlite3_prepare_v2(db, readStmtString, -1, &readEntryStmt, nil) ==
             SQLITE_OK {
             if sqlite3_step(readEntryStmt) == SQLITE_ROW {
                 isHUDEnabled = sqlite3_column_int(readEntryStmt, 1)
-                distanceCovered = sqlite3_column_double(readEntryStmt, 2)
+                unitsChosen = sqlite3_column_int(readEntryStmt, 2)
+                distanceCovered = sqlite3_column_double(readEntryStmt, 3)
                 
             } else {
                 print("\nQuery returned no results.")
@@ -153,6 +155,7 @@ public final class SqliteDatabaseService {
         }
         sqlite3_finalize(readEntryStmt)
         return DBRecord(isHUDEnabled: isHUDEnabled == 1 ? true : false,
+                        unitsChosen: Int(unitsChosen),
                         distanceCovered: distanceCovered)
     }
 }

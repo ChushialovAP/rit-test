@@ -20,8 +20,8 @@ public class SpeedometerView: UIView {
     @IBInspectable public var ringThickness: Double = 15
     @IBInspectable public var lineThickness: Double = 3
     
-    @IBInspectable public var subdivisionsColor: UIColor = Constants.Colors.subdivisionsColor
-    @IBInspectable public var divisioncColor: UIColor = Constants.Colors.divisionsColor
+    @IBInspectable public var subdivisionsColor: UIColor = UIColor.clear
+    @IBInspectable public var divisioncColor: UIColor = UIColor.clear
     
     @IBInspectable public var divisionsRadius: Double = 1.25
     @IBInspectable public var subdivisionsRadius: Double = 0.75
@@ -157,7 +157,7 @@ public class SpeedometerView: UIView {
         minValueLabel.text = String(format: "%.0f", minValue)
         minValueLabel.font = Constants.Fonts.minMaxValueFont
         minValueLabel.minimumScaleFactor = 10 / Constants.Fonts.minMaxValueFont.pointSize
-        minValueLabel.textColor = .black
+        //minValueLabel.textColor = Constants.Colors.valueTextColor
         let minDotCenter = CGPoint(x: CGFloat(dotRadius * cos(startAngle)) + center.x,
                                    y: CGFloat(dotRadius * sin(startAngle)) + center.y)
         minValueLabel.frame = CGRect(x: minDotCenter.x + 8 - 40, y: minDotCenter.y + 30, width: 40, height: 20)
@@ -169,7 +169,7 @@ public class SpeedometerView: UIView {
         maxValueLabel.text = String(format: "%.0f", maxValue)
         maxValueLabel.font = Constants.Fonts.minMaxValueFont
         maxValueLabel.minimumScaleFactor = 10 / Constants.Fonts.minMaxValueFont.pointSize
-        maxValueLabel.textColor = .black
+        //maxValueLabel.textColor = Constants.Colors.valueTextColor
         let maxDotCenter = CGPoint(x: CGFloat(dotRadius * cos(endAngle)) + center.x,
                                    y: CGFloat(dotRadius * sin(endAngle)) + center.y)
         maxValueLabel.frame = CGRect(x: maxDotCenter.x - 8, y: maxDotCenter.y + 30, width: 40, height: 20)
@@ -180,9 +180,18 @@ public class SpeedometerView: UIView {
         let progress = maxValue != 0 ? (value - minValue) / (maxValue - minValue) : 0
         progressLayer.strokeEnd = CGFloat(progress)
         
-        let ringColor = Constants.Colors.ringStrokeColor
-
-        progressLayer.strokeColor = ringColor.cgColor
+//        let ringColor = Constants.Colors.ringStrokeColor
+//
+//        progressLayer.strokeColor = ringColor.cgColor
+    }
+    
+    func apply(theme: Theme) {
+        minValueLabel.textColor = theme.labelColor
+        maxValueLabel.textColor = theme.labelColor
+        progressLayer.strokeColor = theme.ringStrokeColor.cgColor
+        self.backgroundColor = theme.backgroundColor
+        subdivisionsColor = theme.grayColor
+        divisioncColor = theme.grayColor
     }
 }
 

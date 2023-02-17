@@ -9,24 +9,41 @@ protocol MainViewable: AnyObject {
     
     func updateAverageSpeed(_ value: Double)
     
-    func updateUnits(_ value: String)
+    func updateUnits(_ value: SpeedometerUnitsProtocol)
     
-    func enableHUD(_ shouldEnable: Bool)
+    func updateHUDStatus(_ value: Bool)
+}
+
+protocol MainControllerDelegate: AnyObject {
+    func setSwitchStateOn(_ value: Int)
 }
 
 class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewable {
     
+    @IBOutlet weak var distanceTextLabel: UILabel!
+    @IBOutlet weak var avgSpeedTextLabel: UILabel!
+    @IBOutlet weak var temperatureTextLabel: UILabel!
     @IBOutlet weak var speedometerView: SpeedometerView!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var digitalSpeedometerView: DigitalSpeedometerView!
     @IBOutlet weak var distanceCoveredLabel: UILabel!
     @IBOutlet weak var averageSpeedLabel: UILabel!
     
+    weak var delegate: MainControllerDelegate?
+    
     var presenter: MainPresenterProtocol!
     
     let manager = CLLocationManager()
     
-    var isHUDEnabled: Bool = false
+    var isHUDEnabled: Bool = false {
+        didSet {
+            if (themeProvider.theme == .light && isHUDEnabled == true)
+                || (themeProvider.theme == .dark && isHUDEnabled == false) {
+                themeProvider.toggleTheme()
+            }
+            self.changeHUDStatus(isHUDEnabled)
+        }
+    }
     
     var timer: Timer? = nil
     
@@ -34,6 +51,7 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         didSet {
             self.speedometerView.units = units
             self.digitalSpeedometerView.units = units
+            self.presenter.saveUserData(isHUDEnabled, units.enumCase.rawValue)
         }
     }
     
@@ -46,6 +64,8 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         
         presenter = MainPresenter(view: self)
         
+        themeProvider.register(observer: self)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(onResignActiveNotification), name:  UIApplication.willResignActiveNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(onDidBecomeActiveNotification), name:  UIApplication.didBecomeActiveNotification, object: nil)
@@ -53,8 +73,9 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
 
     
     @IBAction func didTouchedHUDButton(_ sender: Any) {
-        self.presenter.saveUserData(self.isHUDEnabled)
-        changeHUDStatus(isHUDEnabled)
+        self.isHUDEnabled = !isHUDEnabled
+        print(isHUDEnabled)
+        self.presenter.saveUserData(self.isHUDEnabled, self.units.enumCase.rawValue)
     }
     
     @IBAction func didTouchResetButton(_ sender: Any) {
@@ -63,17 +84,17 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
     
     @objc private func onResignActiveNotification() {
         UIScreen.main.brightness = CGFloat(self.getCurrentBrightness())
-        self.presenter.disableTimers()
+        self.presenter.setupOnAppWillResignActive()
         manager.stopUpdatingLocation()
     }
     
     @objc private func onDidBecomeActiveNotification() {
-        self.presenter.readAndSetDataFromDB()
+        self.presenter.setupOnAppIsActive()
         manager.startUpdatingLocation()
     }
     
-    func enableHUD(_ shouldEnable: Bool) {
-        changeHUDStatus(shouldEnable)
+    func updateHUDStatus(_ value: Bool) {
+        self.isHUDEnabled = value
     }
     
     func updateWeather(_ value: Double) {
@@ -82,16 +103,12 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         }
     }
     
-    func updateUnits(_ value: String) {
-        switch value {
-        case Km().text:
-            self.units = Km()
-        case Mi().text:
-            self.units = Mi()
-        default:
-            self.units = Km()
-        }
+    func updateUnits(_ value: SpeedometerUnitsProtocol) {
+        self.units = value
+        
+        self.delegate?.setSwitchStateOn(units.enumCase.rawValue)
     }
+
     
     func updateDistance(_ value: Double) {
         let distanceInCurrentUnits = value * (speedometerView.units?.factorToGetFromMeters ?? Km().factorToGetFromMeters)
@@ -109,8 +126,7 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
     }
     
     private func changeHUDStatus(_ isHUDEnabled: Bool) {
-        self.isHUDEnabled = !isHUDEnabled
-        let shouldRotateScale: CGFloat = isHUDEnabled ? 1 : -1
+        let shouldRotateScale: CGFloat = isHUDEnabled ? -1 : 1
 
         if Int(shouldRotateScale) == -1 {
             self.saveCurrentBrightness()
@@ -188,5 +204,20 @@ class MainViewController: UIViewController, CLLocationManagerDelegate, MainViewa
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
+    }
+}
+
+extension MainViewController: Themeable {
+    func apply(theme: Theme) {
+        self.view.backgroundColor = theme.backgroundColor
+        distanceCoveredLabel.textColor = theme.labelColor
+        temperatureLabel.textColor = theme.labelColor
+        averageSpeedLabel.textColor = theme.labelColor
+        avgSpeedTextLabel.textColor = theme.labelColor
+        distanceTextLabel.textColor = theme.labelColor
+        temperatureTextLabel.textColor = theme.labelColor
+        
+        speedometerView.apply(theme: theme)
+        digitalSpeedometerView.apply(theme: theme)
     }
 }

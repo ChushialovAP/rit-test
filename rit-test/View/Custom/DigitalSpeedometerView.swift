@@ -16,11 +16,11 @@ public class DigitalSpeedometerView: UIView {
     
     @IBInspectable public var valueFont: UIFont = Constants.Fonts.valueFont
     
-    @IBInspectable public var valueTextColor: UIColor = Constants.Colors.valueTextColor
+    @IBInspectable public var valueTextColor: UIColor = UIColor.clear
     
     @IBInspectable public var unitOfMeasurementFont: UIFont = Constants.Fonts.unitOfMeasurmentFont
     
-    @IBInspectable public var unitOfMeasurementTextColor: UIColor = Constants.Colors.unitOfMeasurmentTextColor
+    @IBInspectable public var unitOfMeasurementTextColor: UIColor = UIColor.clear
     
     public var units: SpeedometerUnitsProtocol? {
         didSet {
@@ -71,5 +71,10 @@ public class DigitalSpeedometerView: UIView {
                                               height: 20)
     }
     
+    func apply(theme: Theme) {
+        valueTextColor = theme.labelColor
+        unitOfMeasurementTextColor = theme.labelColor
+        self.backgroundColor = theme.backgroundColor
+    }
 }
 

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1914E50C299F7CF9003811EC /* UnitsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914E50B299F7CF9003811EC /* UnitsEnum.swift */; };
+		1914E50F299F8D99003811EC /* Themeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914E50E299F8D99003811EC /* Themeable.swift */; };
+		1914E511299F8DB5003811EC /* ThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914E510299F8DB5003811EC /* ThemeProvider.swift */; };
+		1914E513299F8DD8003811EC /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914E512299F8DD8003811EC /* Theme.swift */; };
+		1914E515299F8E23003811EC /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914E514299F8E23003811EC /* Styles.swift */; };
 		19CBA1A2299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19CBA1A0299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf */; };
 		19CBA1A3299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19CBA1A1299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf */; };
 		19CBA1A8299E3D3100DC36FC /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19CBA1A7299E3D3100DC36FC /* UserDefaultsService.swift */; };
@@ -32,6 +37,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1914E50B299F7CF9003811EC /* UnitsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitsEnum.swift; sourceTree = "<group>"; };
+		1914E50E299F8D99003811EC /* Themeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themeable.swift; sourceTree = "<group>"; };
+		1914E510299F8DB5003811EC /* ThemeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeProvider.swift; sourceTree = "<group>"; };
+		1914E512299F8DD8003811EC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		1914E514299F8E23003811EC /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		19CBA1A0299E364300DC36FC /* HelveticaNeueCyr-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HelveticaNeueCyr-Medium.ttf"; sourceTree = "<group>"; };
 		19CBA1A1299E364300DC36FC /* Helvetica Neue Condensed Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Helvetica Neue Condensed Bold.ttf"; sourceTree = "<group>"; };
 		19CBA1A7299E3D3100DC36FC /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
@@ -72,6 +82,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1914E50D299F8D8E003811EC /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				1914E50E299F8D99003811EC /* Themeable.swift */,
+				1914E510299F8DB5003811EC /* ThemeProvider.swift */,
+				1914E512299F8DD8003811EC /* Theme.swift */,
+				1914E514299F8E23003811EC /* Styles.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
 		19D1446329950EEA00E45916 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +114,7 @@
 		19D1446E29950EEA00E45916 /* rit-test */ = {
 			isa = PBXGroup;
 			children = (
+				1914E50D299F8D8E003811EC /* Theme */,
 				19D144B3299A80B600E45916 /* Presenter */,
 				19D144A8299A725F00E45916 /* DataLayer */,
 				19D144A3299A524A00E45916 /* Fonts */,
@@ -203,6 +225,7 @@
 			children = (
 				19D144B1299A740900E45916 /* WeatherModel.swift */,
 				19D144BA299B982900E45916 /* DBRecord.swift */,
+				1914E50B299F7CF9003811EC /* UnitsEnum.swift */,
 			);
 			path = DataModel;
 			sourceTree = "<group>";
@@ -349,10 +372,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1914E50C299F7CF9003811EC /* UnitsEnum.swift in Sources */,
 				19D144BB299B982900E45916 /* DBRecord.swift in Sources */,
 				19D144AF299A738800E45916 /* NetworkService.swift in Sources */,
 				19D1449C299A31AF00E45916 /* MainViewController.swift in Sources */,
 				19D14492299A0DA100E45916 /* SpeedometerView.swift in Sources */,
+				1914E50F299F8D99003811EC /* Themeable.swift in Sources */,
 				19D144A0299A468600E45916 /* MainTabBarController.swift in Sources */,
 				19D1447029950EEA00E45916 /* AppDelegate.swift in Sources */,
 				19D1447229950EEA00E45916 /* SceneDelegate.swift in Sources */,
@@ -362,7 +387,10 @@
 				19D14495299A0FAB00E45916 /* Units.swift in Sources */,
 				19D14490299A0D2E00E45916 /* Constants.swift in Sources */,
 				19D144B9299B953C00E45916 /* SQLiteDatabaseService.swift in Sources */,
+				1914E515299F8E23003811EC /* Styles.swift in Sources */,
 				19D14498299A23A400E45916 /* CGContext+Extension.swift in Sources */,
+				1914E511299F8DB5003811EC /* ThemeProvider.swift in Sources */,
+				1914E513299F8DD8003811EC /* Theme.swift in Sources */,
 				19D144B2299A740900E45916 /* WeatherModel.swift in Sources */,
 				19D1449E299A413700E45916 /* SettingsViewController.swift in Sources */,
 			);
@@ -432,7 +460,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -486,7 +514,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

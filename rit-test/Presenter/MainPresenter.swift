@@ -15,11 +15,13 @@ protocol MainPresenterProtocol: AnyObject {
     
     func resetData()
     
-    func saveUserData(_ isHUDEnabled: Bool)
+    func saveUserData(_ isHUDEnabled: Bool, _ unitsChosen: Int)
     
-    func readAndSetDataFromDB()
+    func setupOnAppIsActive()
     
-    func disableTimers()
+    func setupOnAppWillResignActive()
+    
+    func saveUserDistanceCovered()
 }
 
 final class MainPresenter: MainPresenterProtocol {
@@ -58,12 +60,9 @@ final class MainPresenter: MainPresenterProtocol {
     init (view: MainViewable, saveDestinationEveryDistanceInMeters: Double? = nil) {
         self.view = view
         
-        timer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(delayLocationsRemoval), userInfo: nil, repeats: false)
-        
         if let saveDestinationEveryDistanceInMeters = saveDestinationEveryDistanceInMeters {
             self.saveDestinationEveryDistanceInMeters = saveDestinationEveryDistanceInMeters
         }
-        
     }
     
     @objc
@@ -71,7 +70,25 @@ final class MainPresenter: MainPresenterProtocol {
         locationsShouldBeRemovedWhenAppend = true
     }
     
-    func disableTimers() {
+    func setupOnAppIsActive() {
+        do {
+            try db.openDB()
+        } catch {
+            print("error while creating connection with database")
+        }
+        
+        self.readAndSetDataFromDB()
+        
+        timer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(delayLocationsRemoval), userInfo: nil, repeats: false)
+    }
+    
+    func setupOnAppWillResignActive() {
+        db.closeDB()
+        
+        self.disableTimers()
+    }
+    
+    private func disableTimers() {
         if let timer = timer {
             timer.invalidate()
         }
@@ -107,44 +124,37 @@ final class MainPresenter: MainPresenterProtocol {
     }
     
     func readAndSetDataFromDB() {
-        do {
-            try db.openDB()
-        } catch {
-            print("error while creating connection with database")
-        }
-        
         if let entity = db.read() {
             self.currentDistanceCovered = entity.distanceCovered
-            self.view?.enableHUD(entity.isHUDEnabled != 0)
+            self.view?.updateHUDStatus(entity.isHUDEnabled != 0)
+            if let unitsChosen = entity.unitsChosen {
+                self.view?.updateUnits(getUnitsByNumber(unitsChosen))
+            }
         }
-        
-        db.closeDB()
     }
     
-    func saveUserData(_ isHUDEnabled: Bool) {
-        do {
-            try db.openDB()
-        } catch {
-            print("error while creating connection with database")
+    private func getUnitsByNumber(_ value: Int) -> SpeedometerUnitsProtocol {
+        switch value {
+        case 0:
+            return Km()
+        case 1:
+            return Mi()
+        default:
+            return Km()
         }
-        
+    }
+    
+    func saveUserData(_ isHUDEnabled: Bool, _ unitsChosen: Int) {
         let entryToSave = DBRecord(isHUDEnabled: isHUDEnabled,
+                                   unitsChosen: unitsChosen,
                                    distanceCovered: self.currentDistanceCovered)
-        db.insertFullRecord(entryToSave)
-        
-        db.closeDB()
+        db.insertRecord(entryToSave)
     }
     
     func saveUserDistanceCovered() {
-        do {
-            try db.openDB()
-        } catch {
-            print("error while creating connection with database")
-        }
-        
-        db.insertDistanceCovered(self.currentDistanceCovered)
-        
-        db.closeDB()
+        db.insertRecord(DBRecord(isHUDEnabled: nil,
+                                 unitsChosen: nil,
+                                 distanceCovered: self.currentDistanceCovered))
     }
     
     func resetData() {
@@ -155,6 +165,7 @@ final class MainPresenter: MainPresenterProtocol {
             timer.invalidate()
         }
         self.averageSpeed = 0
+        self.saveUserDistanceCovered()
     }
     
     func handleUserMovement(_ location: CLLocation) {

@@ -1,18 +1,22 @@
 PODS:
+  - ColorCompatibility (1.1.0)
   - SQLite.swift (0.14.1):
     - SQLite.swift/standard (= 0.14.1)
   - SQLite.swift/standard (0.14.1)
 
 DEPENDENCIES:
+  - ColorCompatibility
   - SQLite.swift (~> 0.14.0)
 
 SPEC REPOS:
   trunk:
+    - ColorCompatibility
     - SQLite.swift
 
 SPEC CHECKSUMS:
+  ColorCompatibility: 7257750b5ac742db9c8b593966c6f8e06992149b
   SQLite.swift: 2992550ebf3c5b268bf4352603e3df87d2a4ed72
 
-PODFILE CHECKSUM: 5f1a985dbef36de4615481f64620e5f89d0eb0af
+PODFILE CHECKSUM: 52713888f44b1351c281fc84121d78e7aa474102
 
 COCOAPODS: 1.11.3

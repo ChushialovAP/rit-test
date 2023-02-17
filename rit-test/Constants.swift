@@ -1,4 +1,6 @@
 import UIKit
+import ColorCompatibility
+
 public struct Constants {
     
     struct Fonts {
@@ -15,7 +17,30 @@ public struct Constants {
                                                       green: 217.0 / 255,
                                                       blue: 100.0 / 255,
                                                       alpha: 1)
-        static let unitOfMeasurmentTextColor: UIColor = UIColor(white: 0.3, alpha: 1)
-        static let valueTextColor: UIColor = UIColor(white: 0.1, alpha: 1)
+        static let unitOfMeasurmentTextColor: UIColor = ColorCompatibility.label
+        static let valueTextColor: UIColor = ColorCompatibility.label
     }
+    
+    struct ColorPalette {
+        let grayColor: UIColor
+        let labelColor: UIColor
+        let ringStrokeColor: UIColor
+        let backgroundColor: UIColor
+
+
+        static let light: ColorPalette = .init(
+            grayColor: UIColor(red: 0.24, green: 0.24, blue: 0.26, alpha: 0.3),
+            labelColor: UIColor(red: 0, green: 0, blue: 0, alpha: 1),
+            ringStrokeColor: UIColor(red: 0.2, green: 0.78, blue: 0.35, alpha: 1),
+            backgroundColor: UIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        )
+
+        static let dark: ColorPalette = .init(
+            grayColor: UIColor(red: 0.92, green: 0.92, blue: 0.96, alpha: 0.3),
+            labelColor: UIColor(red: 1, green: 1, blue: 1, alpha: 1),
+            ringStrokeColor: UIColor(red: 0.19, green: 0.82, blue: 0.35, alpha: 1),
+            backgroundColor: UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        )
+    }
+
 }

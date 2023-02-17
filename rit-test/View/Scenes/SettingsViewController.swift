@@ -8,12 +8,14 @@ class SettingsViewController: UIViewController {
 
     @IBOutlet weak var unitsSwitch: UISwitch!
     
+    var shouldSwitch: Bool = false
+    
     weak var delegate: SettingsDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.setupUnitsSwitch()
     }
     
     @IBAction func switchDidChange(_ sender: UISwitch) {
@@ -22,6 +24,10 @@ class SettingsViewController: UIViewController {
         } else {
             delegate?.didChangeUnits(to: Km())
         }
+    }
+    
+    func setupUnitsSwitch() {
+        unitsSwitch.setOn(shouldSwitch, animated: false)
     }
     /*
     // MARK: - Navigation
